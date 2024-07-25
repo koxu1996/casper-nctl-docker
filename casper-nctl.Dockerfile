@@ -32,6 +32,10 @@ RUN git clone https://github.com/casper-network/casper-node-launcher.git ~/caspe
 RUN git clone -b $CLIENT_GITBRANCH https://github.com/casper-ecosystem/casper-client-rs ~/casper-client-rs \
     && cd ~/casper-client-rs && cargo build --release
 RUN git clone -b $NODE_GITBRANCH https://github.com/casper-network/casper-node.git ~/casper-node \
+    && sed -i 's|\(max_deploy_size = \)[0-9_]\+|\14_194_304|' ~/casper-node/resources/local/chainspec.toml.in \
+    && sed -i 's|\(max_body_bytes = \)[0-9_]\+|\18_388_608|g' ~/casper-node/resources/local/config.toml \
+    && sed -i 's|\(session_args_max_length = \)[0-9_]\+|\110_000_000|' ~/casper-node/resources/local/chainspec.toml.in \
+    && sed -i 's|\(max_memory = \)[0-9_]\+|\1640|' ~/casper-node/resources/local/chainspec.toml.in \
     && source ~/casper-node/utils/nctl/sh/assets/compile.sh 
 
 # run clean-build-artifacts.sh to remove intermediate files and keep the image lighter
